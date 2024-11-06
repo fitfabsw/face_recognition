@@ -2,9 +2,6 @@ import cv2
 import numpy as np
 import face_recognition
 import os
-import random
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 
 knowns_dir = "known"
 knowns = os.listdir(knowns_dir)
@@ -35,8 +32,11 @@ def main():
 
         # 縮小視頻幀以加速人臉識別過程
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+
+        # this will crash, use below instead
         # rgb_small_frame = small_frame[:, :, ::-1]
         rgb_small_frame = np.ascontiguousarray(small_frame[:, :, ::-1])
+        # https://stackoverflow.com/questions/75926662/face-recognition-problem-with-face-encodings-function
 
         # 找到視頻幀中所有人臉的位置和編碼
         face_locations = face_recognition.face_locations(rgb_small_frame)
