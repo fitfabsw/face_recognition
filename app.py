@@ -6,13 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import face_recognition
 
-knowns = [
-    "biden.png",
-    "celeba-10.jpg",
-    "celeba-20.jpg",
-    "celeba-30.jpg",
-    "celeba-50.jpg",
-]
+knowns_dir = "known"
+knowns = os.listdir(knowns_dir)
 
 
 def get_random_image_path_whole(source_dir):
@@ -47,9 +42,9 @@ def plot_faces(image, face_locations):
 
 
 def get_knowns_encondings():
-    knonw_images = [f"known/{i}" for i in knowns]
+    known_images = [f"known/{i}" for i in knowns]
     known_encodings = []
-    for known_image_path in knonw_images:
+    for known_image_path in known_images:
         known_image = face_recognition.load_image_file(known_image_path)
         encoding = face_recognition.face_encodings(known_image)
         if encoding:  # Check if at least one face encoding is found
