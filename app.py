@@ -6,6 +6,14 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import face_recognition
 
+knowns = [
+    "biden.png",
+    "celeba-10.jpg",
+    "celeba-20.jpg",
+    "celeba-30.jpg",
+    "celeba-50.jpg",
+]
+
 
 def get_random_image_path_whole(source_dir):
     selected_image = random.sample(os.listdir(source_dir), 1)[0]
@@ -38,6 +46,38 @@ def plot_faces(image, face_locations):
     plt.show()
 
 
+def get_knowns_encondings():
+    knonw_images = [f"known/{i}" for i in knowns]
+    known_encodings = []
+    for known_image_path in knonw_images:
+        known_image = face_recognition.load_image_file(known_image_path)
+        encoding = face_recognition.face_encodings(known_image)
+        if encoding:  # Check if at least one face encoding is found
+            known_encodings.append(encoding[0])
+    return known_encodings
+
+
+def who(image_path):
+    known_encodings = get_knowns_encondings()
+    unknown_image = face_recognition.load_image_file(image_path)
+
+    unknown_encoding = face_recognition.face_encodings(unknown_image)
+    if unknown_encoding:
+        unknown_encoding = unknown_encoding[0]
+    else:
+        return "unknown"
+    # unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
+
+    results = face_recognition.compare_faces(known_encodings, unknown_encoding)
+    print("results", results)
+    who = [e for e, if_true in zip(knowns, results) if if_true]
+    if who:
+        who = who[0].split(".")[0]
+    else:
+        who = "unknown"
+    return who
+
+
 if __name__ == "__main__":
     home = os.path.expanduser("~")
     projdir = (
@@ -45,9 +85,30 @@ if __name__ == "__main__":
     )
     source_dir = f"{projdir}/img_align_celeba/img_align_celeba"
     imgpath = f"{home}/.cache/kagglehub/datasets/jessicali9530/celeba-dataset/versions/2/img_align_celeba/img_align_celeba_partial"
-    #
+
     random_image_path = get_random_image_path_whole(source_dir)
     image = face_recognition.load_image_file(random_image_path)
     face_locations = face_recognition.face_locations(image)
 
-    plot_faces(image, face_locations)
+    # plot_faces(image, face_locations)
+
+    known_image = face_recognition.load_image_file("known/biden.png")
+
+    # biden_encoding = face_recognition.face_encodings(known_image)[0]
+
+    # knowns = [f"known/{i}" for i in knowns]
+    # known_encodings = []
+    # for known_image_path in knowns:
+    #     known_image = face_recognition.load_image_file(known_image_path)
+    #     encoding = face_recognition.face_encodings(known_image)
+    #     if encoding:  # Check if at least one face encoding is found
+    #         known_encodings.append(encoding[0])
+
+    known_encodings = get_knowns_encondings()
+
+    unknown_image = face_recognition.load_image_file("unknown/biden-01.png")
+    unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
+    results = face_recognition.compare_faces(known_encodings, unknown_encoding)
+    # results = face_recognition.compare_faces([biden_encoding], unknown_encoding)
+    #
+    print("results", results)
