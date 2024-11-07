@@ -9,17 +9,6 @@ knowns_dir = "known"
 knowns = os.listdir(knowns_dir)
 
 
-def get_knowns_encodings():
-    known_images = [f"{knowns_dir}/{i}" for i in knowns]
-    known_encodings = []
-    for known_image_path in known_images:
-        known_image = face_recognition.load_image_file(known_image_path)
-        encoding = face_recognition.face_encodings(known_image)
-        if encoding:  # Check if at least one face encoding is found
-            known_encodings.append(encoding[0])
-    return known_encodings
-
-
 def save_encodings_to_file(encodings, names, filename="encodings.pkl"):
     with open(filename, "wb") as f:
         pickle.dump((encodings, names), f)
@@ -35,24 +24,20 @@ def load_encodings_from_file(filename="encodings.pkl"):
 def get_knowns_encodings_multi():
     known_encodings = []
     known_names = []
-
     # 假設每個人有一個文件夾，文件夾名稱即人名
     base_dir = "known-multiple"
     for person_name in os.listdir(base_dir):
         person_dir = os.path.join(base_dir, person_name)
-
         # 確保是目錄
         if os.path.isdir(person_dir):
             for filename in os.listdir(person_dir):
                 image_path = os.path.join(person_dir, filename)
                 image = face_recognition.load_image_file(image_path)
                 encodings = face_recognition.face_encodings(image)
-
                 if encodings:
                     known_encodings.append(encodings[0])  # 每張圖片的第一個人臉編碼
                     known_names.append(person_name)  # 使用文件夾名稱作為人名
                     print(f"Loaded encoding for {person_name} from {filename}")
-
     return known_encodings, known_names
 
 
@@ -94,7 +79,8 @@ def main():
             face_locations, face_encodings
         ):
             # 與已知人臉進行比對
-            threshold = 0.4  # 使用更嚴格的閾值
+            # threshold = 0.4  # 使用更嚴格的閾值
+            threshold = 0.5
             distances = face_recognition.face_distance(known_encodings, face_encoding)
             best_match_index = np.argmin(distances)  # 找出距離最近的已知編碼
             name = "Unknown"
