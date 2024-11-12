@@ -1,6 +1,7 @@
 import pickle
 import os
 import numpy as np
+from sklearn import svm #pip3 install scikit-learn
 import face_recognition
 
 knowns_dir = "example-known"
@@ -28,6 +29,8 @@ def get_knowns_encodings_multi(knowns_multi_dir="example-known-multiple"):
         # 確保是目錄
         if os.path.isdir(person_dir):
             for filename in os.listdir(person_dir):
+                if '.DS_Store' in filename :
+                    continue
                 image_path = os.path.join(person_dir, filename)
                 image = face_recognition.load_image_file(image_path)
                 encodings = face_recognition.face_encodings(image)
@@ -78,6 +81,31 @@ def who2(image_path):
     return name
 
 
+def who3(image_path):
+    if os.path.exists("encodings.pkl"):
+        known_encodings, known_names = load_encodings_from_file()
+    else:
+        known_encodings, known_names = get_knowns_encodings_multi()
+        save_encodings_to_file(known_encodings, known_names, filename="encodings.pkl")
+    unknown_image = face_recognition.load_image_file(image_path)
+    unknown_encoding = face_recognition.face_encodings(unknown_image)
+    if unknown_encoding:
+        unknown_encoding = unknown_encoding[0]
+    else:
+        return "unknown"
+    
+    # Create and train the SVC classifier
+    clf = svm.SVC(gamma='scale')
+    clf.fit(known_encodings,known_names)
+    name = clf.predict([unknown_encoding])
+    # Predict all the faces in the test image using the trained classifier
+    # for i in range(len(unknown_encoding)):
+    #     unknown_encoding = face_recognition.face_encodings(unknown_image)[i]
+    #     name = clf.predict([unknown_encoding])
+    #     print(*name)
+    return name[0]
+
+
 def save_encodings_to_file(encodings, names, filename="encodings.pkl"):
     with open(filename, "wb") as f:
         pickle.dump((encodings, names), f)
@@ -99,5 +127,7 @@ if __name__ == "__main__":
             break
         whoami = who(unknown_image_file)
         whoami2 = who2(unknown_image_file)
+        whoami3 = who3(unknown_image_file)
         print(f"[method1] This is {whoami}")
         print(f"[method2] This is {whoami2}")
+        print(f"[method3] This is {whoami3}")
