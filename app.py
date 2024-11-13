@@ -12,9 +12,10 @@ knowns_dir = "example-known"
 knowns_multi_dir = "example-known-multiple"
 
 
-def get_knowns_encondings(knowns_dir="known"):
-    known_images = [f"known/{i}" for i in os.listdir(knowns_dir)]
-    # print("known_images", known_images)
+#def get_knowns_encondings(knowns_dir="known"):
+def get_knowns_encondings(knowns_dir = "example-known"):
+    known_images = [f"{knowns_dir}/{i}" for i in os.listdir(knowns_dir)]
+    #print("known_images", known_images)
     known_encodings = []
     for known_image_path in known_images:
         known_image = face_recognition.load_image_file(known_image_path)
