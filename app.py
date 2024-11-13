@@ -1,7 +1,11 @@
 import pickle
 import os
 import numpy as np
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.decomposition import PCA
 from sklearn import svm #pip3 install scikit-learn
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 import face_recognition
 
 knowns_dir = "example-known"
@@ -105,6 +109,47 @@ def who3(image_path):
     #     print(*name)
     return name[0]
 
+def who3_threshold(image_path):
+    if os.path.exists("encodings.pkl"):
+        known_encodings, known_names = load_encodings_from_file()
+    else:
+        known_encodings, known_names = get_knowns_encodings_multi()
+        save_encodings_to_file(known_encodings, known_names, filename="encodings.pkl")
+    unknown_image = face_recognition.load_image_file(image_path)
+    unknown_encoding = face_recognition.face_encodings(unknown_image)
+    if unknown_encoding:
+        unknown_encoding = unknown_encoding[0]
+    else:
+        return "unknown"
+    
+    threshold = 0.1 #
+
+    # Set up PCA for dimensionality reduction, reducing to 150 components
+    #n_components = 150
+    #pca = PCA(n_components=n_components, whiten=True, random_state=42)
+    svc = svm.SVC(gamma='scale', class_weight='balanced', probability=True)
+    #calibrated_svc = CalibratedClassifierCV(base_estimator=svc, method='sigmoid')
+    #clf = svm.SVC(gamma='scale', probability=True)
+    
+    # Create a pipeline that first applies PCA, then SVM
+    #clf = make_pipeline(StandardScaler(), pca, calibrated_svc)
+    #clf = make_pipeline(StandardScaler(), calibrated_svc)
+    clf = make_pipeline(StandardScaler(), svc)
+    
+    clf.fit(known_encodings,known_names)
+    probas = clf.predict_proba([unknown_encoding])[0]
+    max_proba = np.max(probas)
+    max_index = np.argmax(probas)
+    
+    #print(f"known_names = {known_names}")
+    #print(f"clf.classes_ = {clf.classes_}")
+    #print(f"max_index = {max_index}")
+    #print(f"porbas = {probas}")
+    #print(f"max_proba = {max_proba}")
+    
+    if max_proba < threshold:
+        return "unknown"
+    return clf.classes_[max_index]
 
 def save_encodings_to_file(encodings, names, filename="encodings.pkl"):
     with open(filename, "wb") as f:
@@ -128,6 +173,8 @@ if __name__ == "__main__":
         whoami = who(unknown_image_file)
         whoami2 = who2(unknown_image_file)
         whoami3 = who3(unknown_image_file)
+        whoami3th = who3_threshold(unknown_image_file)
         print(f"[method1] This is {whoami}")
         print(f"[method2] This is {whoami2}")
         print(f"[method3] This is {whoami3}")
+        print(f"[method3_th] This is {whoami3th}")
