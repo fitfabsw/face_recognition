@@ -1,6 +1,8 @@
+import logging
 import pickle
 import os
 import numpy as np
+import sys
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.decomposition import PCA
 from sklearn import svm #pip3 install scikit-learn
@@ -8,9 +10,20 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 import face_recognition
 
+logging.basicConfig(
+    level=logging.INFO,
+    #format='%(asctime)s - %(levelname)s - %(message)s',
+    format='%(message)s',
+    handlers=[
+        logging.FileHandler("app.log", mode='w'),
+        logging.StreamHandler(sys.stdout)  # 將日誌輸出到控制台
+    ]
+)
+
+print = logging.info
+
 knowns_dir = "example-known"
 knowns_multi_dir = "example-known-multiple"
-
 
 #def get_knowns_encondings(knowns_dir="known"):
 def get_knowns_encondings(knowns_dir = "example-known"):
@@ -117,13 +130,16 @@ def who3_threshold(image_path):
         known_encodings, known_names = get_knowns_encodings_multi()
         save_encodings_to_file(known_encodings, known_names, filename="encodings.pkl")
     unknown_image = face_recognition.load_image_file(image_path)
-    unknown_encoding = face_recognition.face_encodings(unknown_image)
-    if unknown_encoding:
-        unknown_encoding = unknown_encoding[0]
+    face_locations = face_recognition.face_locations(unknown_image)
+    unknown_encodings = face_recognition.face_encodings(unknown_image, face_locations)
+    if unknown_encodings:
+        #unknown_encoding = unknown_encoding[0]
+        pass
     else:
         return "unknown"
     
     threshold = 0.1 #
+    find_face = []
 
     # Set up PCA for dimensionality reduction, reducing to 150 components
     #n_components = 150
@@ -138,19 +154,23 @@ def who3_threshold(image_path):
     clf = make_pipeline(StandardScaler(), svc)
     
     clf.fit(known_encodings,known_names)
-    probas = clf.predict_proba([unknown_encoding])[0]
-    max_proba = np.max(probas)
-    max_index = np.argmax(probas)
+    for unknown_enc in unknown_encodings:
+        probas = clf.predict_proba([unknown_enc])[0]
+        max_proba = np.max(probas)
+        max_index = np.argmax(probas)
     
-    #print(f"known_names = {known_names}")
-    #print(f"clf.classes_ = {clf.classes_}")
-    #print(f"max_index = {max_index}")
-    #print(f"porbas = {probas}")
-    #print(f"max_proba = {max_proba}")
+        #print(f"known_names = {known_names}")
+        #print(f"clf.classes_ = {clf.classes_}")
+        #print(f"max_index = {max_index}")
+        #print(f"porbas = {probas}")
+        #print(f"max_proba = {max_proba}")
     
-    if max_proba < threshold:
-        return "unknown"
-    return clf.classes_[max_index]
+        if max_proba < threshold:
+            find_face.append("unknown")
+        else:
+            find_face.append(clf.classes_[max_index])
+        
+    return find_face
 
 def save_encodings_to_file(encodings, names, filename="encodings.pkl"):
     with open(filename, "wb") as f:
@@ -165,8 +185,8 @@ def load_encodings_from_file(filename="encodings.pkl"):
 
 
 if __name__ == "__main__":
-    print("knowns_dir", knowns_dir)
-    print("knowns_multi_dir", knowns_multi_dir)
+    print("knowns_dir %s"% knowns_dir)
+    print("knowns_multi_dir %s"% knowns_multi_dir)
     while True:
         unknown_image_file = input("Please enter image path:")
         if unknown_image_file == "":
@@ -175,6 +195,7 @@ if __name__ == "__main__":
         whoami2 = who2(unknown_image_file)
         whoami3 = who3(unknown_image_file)
         whoami3th = who3_threshold(unknown_image_file)
+        print(unknown_image_file)
         print(f"[method1] This is {whoami}")
         print(f"[method2] This is {whoami2}")
         print(f"[method3] This is {whoami3}")
