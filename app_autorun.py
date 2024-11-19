@@ -112,8 +112,7 @@ def who2_multiple(image_path):
     print(f"There are {len(unknown_encoding)} people in this photo .")
     for i in range(len(unknown_encoding)):
         name += f"[{i+1}]"
-        unknown_encoding_item = face_recognition.face_encodings(unknown_image)[i]
-        distances = face_recognition.face_distance(known_encodings, unknown_encoding_item)
+        distances = face_recognition.face_distance(known_encodings, unknown_encoding[i])
         best_match_index = np.argmin(distances)
 
         if distances[best_match_index] < threshold:
@@ -147,6 +146,28 @@ def who3(image_path):
     #     name = clf.predict([unknown_encoding])
     #     print(*name)
     return name[0]
+
+def who3_multiple(image_path):
+    if os.path.exists("encodings.pkl"):
+        known_encodings, known_names = load_encodings_from_file()
+    else:
+        known_encodings, known_names = get_knowns_encodings_multi()
+        save_encodings_to_file(known_encodings, known_names, filename="encodings.pkl")
+    unknown_image = face_recognition.load_image_file(image_path)
+    unknown_encoding = face_recognition.face_encodings(unknown_image)
+    name=""
+    if unknown_encoding:
+        # Create and train the SVC classifier
+        clf = svm.SVC(gamma='scale')
+        clf.fit(known_encodings,known_names)
+        
+        for i in range(len(unknown_encoding)):
+            result = clf.predict([unknown_encoding[i]])
+            name += f"[{i+1}]"
+            name += result[0]+" "
+        return name
+    else:
+        return "unknown"
 
 def who3_threshold(image_path):
     if os.path.exists("encodings.pkl"):
@@ -216,12 +237,14 @@ def print_solution(unknown_image_file):
     whoami2 = who2(unknown_image_file)
     whoami2_m = who2_multiple(unknown_image_file)
     whoami3 = who3(unknown_image_file)
+    whoami3_m = who3_multiple(unknown_image_file)
     whoami3th = who3_threshold(unknown_image_file)
     
     #print(f"[method1] This is {whoami}")
     print(f"[method2] This is {whoami2}")
     print(f"[method2_m] They are {whoami2_m}")
     print(f"[method3] This is {whoami3}")
+    print(f"[method3_m] They are {whoami3_m}")
     print(f"[method3_th] This is {whoami3th}")
 
 if __name__ == "__main__":
