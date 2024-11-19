@@ -249,5 +249,5 @@ if __name__ == "__main__":
         print(f"[method2] This is {whoami2}")
         print(f"[method2_m] They are {whoami2_m}")
         print(f"[method3] This is {whoami3}")
-        print(f"[method3] This is {whoami3}")
+        print(f"[method3_m] This is {whoami3_m}")
         print(f"[method3_th] This is {whoami3th}")
