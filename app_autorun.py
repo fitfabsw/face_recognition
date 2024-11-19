@@ -98,6 +98,31 @@ def who2(image_path):
         name = known_names[best_match_index]
     return name
 
+def who2_multiple(image_path):
+    if os.path.exists("encodings.pkl"):
+        known_encodings, known_names = load_encodings_from_file()
+    else:
+        known_encodings, known_names = get_knowns_encodings_multi()
+        save_encodings_to_file(known_encodings, known_names, filename="encodings.pkl")
+    unknown_image = face_recognition.load_image_file(image_path)
+    unknown_encoding = face_recognition.face_encodings(unknown_image)
+
+    threshold = 0.5
+    name = ""
+    print(f"There are {len(unknown_encoding)} people in this photo .")
+    for i in range(len(unknown_encoding)):
+        name += f"[{i+1}]"
+        unknown_encoding_item = face_recognition.face_encodings(unknown_image)[i]
+        distances = face_recognition.face_distance(known_encodings, unknown_encoding_item)
+        best_match_index = np.argmin(distances)
+
+        if distances[best_match_index] < threshold:
+            name += known_names[best_match_index] +" "
+        else:
+            name+= "Unknown "
+    return name
+
+
 
 def who3(image_path):
     if os.path.exists("encodings.pkl"):
@@ -184,13 +209,18 @@ def load_encodings_from_file(filename="encodings.pkl"):
     return None, None
 
 def print_solution(unknown_image_file):
+    print("")
+    print(unknown_image_file)
+
     #whoami = who(unknown_image_file)
     whoami2 = who2(unknown_image_file)
+    whoami2_m = who2_multiple(unknown_image_file)
     whoami3 = who3(unknown_image_file)
     whoami3th = who3_threshold(unknown_image_file)
-    print(unknown_image_file)
+    
     #print(f"[method1] This is {whoami}")
     print(f"[method2] This is {whoami2}")
+    print(f"[method2_m] They are {whoami2_m}")
     print(f"[method3] This is {whoami3}")
     print(f"[method3_th] This is {whoami3th}")
 
