@@ -15,6 +15,7 @@ logging.basicConfig(
 
 print = logging.info
 
+"""
 accepted_people = [
     "安倍晉三",
     "岸田文雄",
@@ -38,6 +39,9 @@ accepted_people = [
     "Tim_Cook",
     "unknown"
 ]
+"""
+
+accepted_people = ["unknown"]
 
 dir_len = [
     40,
@@ -54,6 +58,10 @@ dir_len = [
     10,
     10
 ]
+
+def get_accepted_people(knowns_multi_dir="example-known-multiple"):
+    for person_name in os.listdir(knowns_multi_dir):
+        accepted_people.append(person_name)
 
 # filename:abc-1.jpg
 def parse_answer(filename):
@@ -81,6 +89,8 @@ def image_face_num(image_path):
 if __name__ == "__main__":
 
     file_num_list = [0] * 13
+    get_accepted_people()
+    print(f"Accepted people name include {accepted_people}")
     
     for d in os.listdir("./"):
 
