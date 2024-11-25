@@ -121,6 +121,12 @@ python app_autorun.py
 python stream.py
 ```
 
+### 偵測 比對組 問題
+
+```bash
+python detect_potential_problem.py
+```
+
 ## Other links
 
 - [github: face_recognition](https://github.com/ageitgey/face_recognition)
