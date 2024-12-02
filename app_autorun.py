@@ -107,6 +107,7 @@ def handle_solution(unknown_image_file, people, unknown_num, weight, dir_score, 
     return dir_score, total_score
 
 def final_solution(score_1_2_4, total_score):
+    print("\n================================================================")
     print(f"[method2] Directory 1, 2, 4 score: {score_1_2_4[1]}. Final total score = {total_score[1]}")
     print(f"[method2_m] Directory 1, 2, 4 score: {score_1_2_4[2]}. Final total score = {total_score[2]}")
     print(f"[method3] Directory 1, 2, 4 score: {score_1_2_4[3]}. Final total score = {total_score[3]}")

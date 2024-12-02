@@ -146,7 +146,7 @@ if __name__ == "__main__":
             # after for dd in os.listdir(d_path)
             for i, fnum in enumerate(file_num_list):
                 if fnum == dir_len[i]:
-                    print(f"The number of files in {i+1} are {fnum}, expect = {dir_len[i]}, matched.")
+                    print(f"The number of files in {i+1} is {fnum}, expect = {dir_len[i]}, matched.")
                 else:
-                    print(f"The number of files in {i+1} are {fnum}, expect = {dir_len[i]}, NOT matched.")
+                    print(f"The number of files in {i+1} is {fnum}, expect = {dir_len[i]}, NOT matched.")
                     
