@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from who_lib import knowns_dir, knowns_multi_dir, get_knowns_encondings, get_knowns_encodings_multi, who, who2, who2_multiple, who3, who3_multiple, who3_threshold, save_encodings_to_file, load_encodings_from_file
+from who_lib import knowns_dir, knowns_multi_dir, get_knowns_encondings, get_knowns_encodings_multi, who, who2, who2_multiple, who3, who3_multiple, who3_threshold, save_encodings_to_file, load_encodings_from_file ,Draw
 
 logging.basicConfig(
     level=logging.INFO,
@@ -35,3 +35,4 @@ if __name__ == "__main__":
         print(f"[method3] This is {whoami3}")
         print(f"[method3_m] This is {whoami3_m}")
         print(f"[method3_th] This is {whoami3th}")
+        Draw(unknown_image_file)
