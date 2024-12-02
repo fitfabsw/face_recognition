@@ -1,5 +1,6 @@
 import os
 import pickle
+import cv2
 import numpy as np
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.decomposition import PCA
@@ -213,3 +214,29 @@ def load_encodings_from_file(filename="encodings.pkl"):
         with open(filename, "rb") as f:
             return pickle.load(f)
     return None, None
+
+def Draw(your_image):
+
+    image = face_recognition.load_image_file(your_image)
+
+    face_locations = face_recognition.face_locations(image)
+    face_encodings = face_recognition.face_encodings(image, face_locations)
+
+    # Create a copy of the image to draw on
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+    # Loop through each face in the image
+    for i, (top, right, bottom, left) in enumerate(face_locations):
+        face_encoding = face_encodings[i]
+
+        # Draw a box around the face
+        cv2.rectangle(image, (left, top), (right, bottom), (0, 0, 255), 2)
+
+        # Draw a label with a number
+        cv2.putText(image, f"Face {i+1}", (left + 6, bottom - 6), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1)
+
+    # Show the image
+    cv2.imshow('Image', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
