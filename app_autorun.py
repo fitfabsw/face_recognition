@@ -62,23 +62,23 @@ def handle_solution(unknown_image_file, people, unknown_num, weight, dir_score, 
     print(f"weight = {weight}")
 
     #whoami = who(unknown_image_file, print)
-    whoami2 = who2(unknown_image_file, print)
+    #whoami2 = who2(unknown_image_file, print)
     whoami2_m = who2_multiple(unknown_image_file, print)
-    whoami3 = who3(unknown_image_file, print)
+    #whoami3 = who3(unknown_image_file, print)
     whoami3_m = who3_multiple(unknown_image_file, print)
     whoami3th = who3_threshold(unknown_image_file, print)
     
     #is_correct[0] = check_who_image(whoami.split(' '), people, unknown_num)
-    is_correct[1] = check_who_image(whoami2.strip().split(' '), people, unknown_num)
+    #is_correct[1] = check_who_image(whoami2.strip().split(' '), people, unknown_num)
     is_correct[2] = check_who_image(whoami2_m.strip().split(' '), people, unknown_num)
-    is_correct[3] = check_who_image(whoami3.strip().split(' '), people, unknown_num)
+    #is_correct[3] = check_who_image(whoami3.strip().split(' '), people, unknown_num)
     is_correct[4] = check_who_image(whoami3_m.strip().split(' '), people, unknown_num)
     is_correct[5] = check_who_image(whoami3th.strip().split(' '), people, unknown_num)
 
     #print(f"[method1] This is {whoami}")
-    print(f"[method2] response: {whoami2}. isCorrect = {is_correct[1]}")
+    #print(f"[method2] response: {whoami2}. isCorrect = {is_correct[1]}")
     print(f"[method2_m] response: {whoami2_m}. isCorrect = {is_correct[2]}")
-    print(f"[method3] response: {whoami3}. isCorrect = {is_correct[3]}")
+    #print(f"[method3] response: {whoami3}. isCorrect = {is_correct[3]}")
     print(f"[method3_m] response: {whoami3_m}. isCorrect = {is_correct[4]}")
     print(f"[method3_th] response: {whoami3th}. isCorrect = {is_correct[5]}")
 
@@ -98,9 +98,9 @@ def handle_solution(unknown_image_file, people, unknown_num, weight, dir_score, 
         dir_score[5] += weight
         total_score[5] += weight
 
-    print(f"[method2] Directory score: {dir_score[1]}. Total score = {total_score[1]}")
+    #print(f"[method2] Directory score: {dir_score[1]}. Total score = {total_score[1]}")
     print(f"[method2_m] Directory score: {dir_score[2]}. Total score = {total_score[2]}")
-    print(f"[method3] Directory score: {dir_score[3]}. Total score = {total_score[3]}")
+    #print(f"[method3] Directory score: {dir_score[3]}. Total score = {total_score[3]}")
     print(f"[method3_m] Directory score: {dir_score[4]}. Total score = {total_score[4]}")
     print(f"[method3_th] Directory score: {dir_score[5]}. Total score = {total_score[5]}")
 
@@ -108,9 +108,9 @@ def handle_solution(unknown_image_file, people, unknown_num, weight, dir_score, 
 
 def final_solution(score_1_2_4, total_score):
     print("\n================================================================")
-    print(f"[method2] Directory 1, 2, 4 score: {score_1_2_4[1]}. Final total score = {total_score[1]}")
+    #print(f"[method2] Directory 1, 2, 4 score: {score_1_2_4[1]}. Final total score = {total_score[1]}")
     print(f"[method2_m] Directory 1, 2, 4 score: {score_1_2_4[2]}. Final total score = {total_score[2]}")
-    print(f"[method3] Directory 1, 2, 4 score: {score_1_2_4[3]}. Final total score = {total_score[3]}")
+    #print(f"[method3] Directory 1, 2, 4 score: {score_1_2_4[3]}. Final total score = {total_score[3]}")
     print(f"[method3_m] Directory 1, 2, 4 score: {score_1_2_4[4]}. Final total score = {total_score[4]}")
     print(f"[method3_th] Directory 1, 2, 4 score: {score_1_2_4[5]}. Final total score = {total_score[5]}")
 
