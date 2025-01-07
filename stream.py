@@ -104,8 +104,9 @@ def main():
         # 顯示帶有標記的幀
         cv2.imshow("Video", frame)
 
-        # 按下 'q' 鍵退出循環
-        if cv2.waitKey(1) & 0xFF == ord("q"):
+        # Check for 'q' key press OR if window was closed
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q") or cv2.getWindowProperty("Video", cv2.WND_PROP_VISIBLE) < 1:
             break
 
     # 釋放視頻流資源
